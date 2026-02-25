@@ -1,0 +1,10 @@
+.DS_Store
+docker/mysql/data/*
+!docker/mysql/data/.gitkeep
+
+src/.env
+src/vendor/
+src/storage/framework/cache/data/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/storage/logs/*

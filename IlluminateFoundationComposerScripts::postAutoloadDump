@@ -1,0 +1,4 @@
+
+
+[B
+docker-compose exec php composer dump-autoload
