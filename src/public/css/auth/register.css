@@ -1,0 +1,180 @@
+/* --- 前半の共通スタイル、h1、label等はそのまま --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+h1 {
+    position: absolute;
+    width: 144px;
+    height: 44px;
+    top: 188px;
+    left: 50%;
+    margin-left: -72px;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 100%;
+    color: #000000;
+    margin-top: 0;
+}
+
+.label-text {
+    position: absolute;
+    width: 205px;
+    height: 36px;
+    left: 50%;
+    margin-left: -340px;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 100%;
+    color: #000000;
+    display: block;
+}
+
+.form-group:nth-of-type(1) .label-text {
+    top: 304px;
+}
+
+.form-group:nth-of-type(2) .label-text {
+    top: 440px;
+}
+
+.form-group:nth-of-type(3) .label-text {
+    top: 576px;
+}
+
+.form-group:nth-of-type(4) .label-text {
+    top: 712px;
+}
+
+/* --- ここから修正：入力項目とエラーを左揃えにする設定 --- */
+
+/* 入力ボックスとエラーメッセージを囲む基準の枠 */
+.input-group {
+    position: absolute;
+    width: 680px;
+    /* 入力ボックスの幅 */
+    left: 50%;
+    margin-left: -340px;
+    /* Figmaの416pxの位置を中央基準で固定 */
+}
+
+/* 各項目の縦位置（top）は .input-group に指定 */
+.form-group:nth-of-type(1) .input-group {
+    top: 340px;
+}
+
+/* 名前のinputのtop */
+.form-group:nth-of-type(2) .input-group {
+    top: 476px;
+}
+
+/* メールのinputのtop */
+.form-group:nth-of-type(3) .input-group {
+    top: 612px;
+}
+
+/* パスワードのinputのtop */
+.form-group:nth-of-type(4) .input-group {
+    top: 748px;
+}
+
+/* 確認パスのinputのtop */
+
+/* 入力ボックス自体 */
+.form-group input {
+    position: relative;
+    /* absoluteからrelativeに変更 */
+    width: 100%;
+    /* 親要素(.input-group)いっぱいまで広げる */
+    height: 60px;
+    left: 0;
+    /* 左端に固定 */
+    margin-left: 0;
+    /* marginでの調整を解除 */
+    border-radius: 4px;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    padding: 0 10px;
+    font-size: 20px;
+}
+
+/* エラーメッセージ */
+.error {
+    position: absolute;
+    /* relativeな親要素(.input-group)に対して絶対配置 */
+    top: 65px;
+    /* 入力ボックス(60px)のすぐ下に配置 */
+    left: 0;
+    /* これで入力ボックスの左端と完全に揃う */
+    margin-left: 0;
+    /* marginでの調整を解除 */
+    color: #ff0000;
+    font-size: 14px;
+    margin: 0;
+    line-height: 100%;
+    white-space: nowrap;
+    /* メッセージが折り返さないようにする */
+}
+
+/* --- 残りのスタイル --- */
+
+button[type="submit"] {
+    position: absolute;
+    width: 680px;
+    height: 60px;
+    top: 858px;
+    left: 50%;
+    margin-left: -340px;
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.login-link {
+    position: absolute;
+    width: 257px;
+    height: 49px;
+    top: 935px;
+    left: 50%;
+    margin-left: -128.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-link a {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 100%;
+    color: #0073CC;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* タブレット対応 (850px以下) */
+@media screen and (max-width: 850px) {
+
+    .input-group,
+    button[type="submit"] {
+        width: 90%;
+        margin-left: -45%;
+    }
+
+    .label-text {
+        margin-left: -45%;
+    }
+}
