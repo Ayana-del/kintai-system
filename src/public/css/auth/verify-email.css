@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.verify-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+.message-group {
+    position: absolute;
+    width: 680px;
+    top: 304px;
+    left: 50%;
+    margin-left: -340px;
+    text-align: center;
+}
+
+.message-text {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #000000;
+    margin: 0;
+}
+
+.action-group {
+    position: absolute;
+    width: 680px;
+    top: 410px;
+    left: 50%;
+    margin-left: -340px;
+    text-align: center;
+}
+
+.verify-btn {
+    width: 180px;
+    height: 44px;
+    background-color: #D9D9D9;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #0073CC;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
+
+.status-message {
+    margin-top: 15px;
+    color: #00aa00;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+@media screen and (max-width: 850px) {
+    .message-group {
+        width: 90%;
+        margin-left: -45%;
+        top: 280px;
+    }
+
+    .message-text {
+        font-size: 18px;
+    }
+
+    .action-group {
+        width: 90%;
+        margin-left: -45%;
+        top: 380px;
+    }
+
+    .verify-btn {
+        width: 100%;
+        max-width: 250px;
+        position: relative;
+    }
+
+    .resend-link-container {
+        width: 100%;
+        margin-top: 20px;
+        position: relative;
+    }
+}
