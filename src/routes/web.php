@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', function () {
-        return view('index'); //ここがメインの打刻画面（仮）
-    })->name('index');
+    Route::get('/', [AttendanceController::class, 'index'])->name('attendance.index');
 });
