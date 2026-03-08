@@ -1,0 +1,99 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.attendance__container {
+    width: 100%;
+    height: 100vh;
+    background-color: #F2F2F2;
+    display: flex;
+    flex-direction: column;
+}
+
+.attendance__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15vh;
+}
+
+.attendance__status {
+    width: 60px;
+    height: 22px;
+    background: #C8C8C8;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #696969;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.attendance__date {
+    font-size: 40px;
+    font-weight: 400;
+    color: #000;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Figmaの比率を再現：日付の下に24px、ボタンの上に100px */
+.attendance__clock {
+    font-size: 80px;
+    font-weight: 700;
+    color: #000;
+    margin-top: 24px;
+    margin-bottom: 100px;
+    line-height: 1;
+}
+
+.attendance__alert {
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+    /* メッセージもボタンと同じ高さの余白の中に配置 */
+    margin-top: -40px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.attendance__panel {
+    display: flex;
+    gap: 40px;
+}
+
+.attendance__button-submit {
+    width: 221px;
+    height: 77px;
+    background: #000;
+    border: none;
+    border-radius: 20px;
+    color: #FFF;
+    font-size: 32px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.attendance__button-rest {
+    width: 221px;
+    height: 77px;
+    background: #FFF;
+    border: none;
+    border-radius: 20px;
+    color: #000;
+    font-size: 32px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 850px) {
+    .attendance__panel {
+        gap: 20px;
+    }
+}

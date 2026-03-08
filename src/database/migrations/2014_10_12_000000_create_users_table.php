@@ -14,8 +14,8 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // 1. ユーザーID
-            $table->string('name'); // 2. お名前
+            $table->id();
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->tinyInteger('role')->default(0);
@@ -33,4 +33,6 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
+
+    
 }
