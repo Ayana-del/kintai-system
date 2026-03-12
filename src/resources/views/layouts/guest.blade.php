@@ -13,11 +13,22 @@
     <header class="header">
         <div class="header-inner">
             <div class="header-logo">
-                <img src="{{ asset('img/logo.png') }}" alt="ロゴ">
+                <a href="{{ route('attendance.index') }}">
+                    <img src="{{ asset('img/logo.png') }}" alt="ロゴ">
+                </a>
             </div>
             <nav class="header-nav">
                 <ul class="header-nav-list">
                     @if (Auth::check())
+                    <li class="header-nav-item">
+                        <a href="{{ route('attendance.index') }}" class="header-nav-link">勤怠</a>
+                    </li>
+                    <li class="header-nav-item">
+                        <a href="{{ route('attendance.list') }}" class="header-nav-link">勤怠一覧</a>
+                    </li>
+                    <li class="header-nav-item">
+                        <a href="#" class="header-nav-link">申請</a>
+                    </li>
                     <li class="header-nav-item">
                         <form class="form" action="/logout" method="post">
                             @csrf

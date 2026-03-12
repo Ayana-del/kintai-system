@@ -1,0 +1,144 @@
+.attendance-detail {
+    width: 100%;
+    min-height: 100vh;
+    background: #F5F5F5;
+    padding: 60px 0;
+}
+
+.attendance-detail__container {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.attendance-detail__heading {
+    position: relative;
+    font-size: 24px;
+    font-weight: 800;
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+.attendance-detail__heading::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: #000;
+}
+
+/* ★Figma厳守: 900px × 555px */
+.attendance-detail__card {
+    width: 900px;
+    height: 555px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    overflow: hidden;
+}
+
+.attendance-detail__table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+/* 555pxを全6行で均等に分割 */
+.attendance-detail__row {
+    border-bottom: 1px solid #EEEEEE;
+    height: 92.5px;
+}
+
+.attendance-detail__row:last-child {
+    border-bottom: none;
+}
+
+/* ラベル：左端から100pxの位置から開始、文字サイズ18px */
+.attendance-detail__label {
+    width: 300px;
+    padding-left: 100px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 700;
+    color: #A9A9A9;
+}
+
+.attendance-detail__data {
+    text-align: left;
+    padding: 0;
+}
+
+/* データ表示（テキスト）: 18px / Bold */
+.attendance-detail__text,
+.attendance-detail__date-group span {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4B4B4B;
+}
+
+.attendance-detail__date-group {
+    display: flex;
+    gap: 80px;
+}
+
+.attendance-detail__input-group {
+    display: flex;
+    align-items: center;
+}
+
+/* ★Figma比率: 備考(316px)に合わせた入力欄 */
+/* 2つの入力欄(130px×2) + 波線(56px) = 316px になるよう調整 */
+.attendance-detail__input {
+    width: 130px;
+    height: 36px;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #4B4B4B;
+}
+
+.attendance-detail__tilde {
+    width: 56px;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* ★Figma厳守: 316px × 72px */
+.attendance-detail__textarea {
+    width: 316px;
+    height: 72px;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    padding: 10px;
+    resize: none;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    color: #4B4B4B;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* 修正ボタン */
+.attendance-detail__actions {
+    width: 900px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.attendance-detail__submit {
+    width: 140px;
+    height: 44px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}

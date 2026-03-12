@@ -8,6 +8,7 @@ body {
     box-sizing: border-box;
 }
 
+/* ヘッダー基本設定 (PC) */
 header {
     width: 100%;
     height: 80px;
@@ -16,8 +17,19 @@ header {
     align-items: center;
 }
 
-.header-logo {
-    padding-left: 50px;
+.header-inner {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    /* 左右に配置 */
+    align-items: center;
+}
+
+.header-logo a {
+    display: block;
 }
 
 .header-logo img {
@@ -27,21 +39,55 @@ header {
     object-fit: contain;
 }
 
-/* タブレット対応 (768px - 850px) */
+/* ナビゲーション (横並び維持) */
+.header-nav-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 40px;
+}
+
+.header-nav-link,
+.header-nav__button {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    white-space: nowrap;
+    /* 改行させない */
+}
+
+/* タブレット対応 (850px以下) */
 @media screen and (max-width: 850px) {
     header {
         height: 70px;
-        /* タブレットに合わせて少し高さを抑える */
     }
 
-    .header-logo {
-        padding-left: 20px;
-        /* 余白を狭くしてロゴの表示領域を確保 */
+    .header-inner {
+        padding: 0 20px;
+        /* 余白を詰めて横並びを死守 */
     }
 
     .header-logo img {
         width: 280px;
-        /* 画面幅に合わせてロゴを縮小 */
+        /* ロゴをサイズダウン */
         height: auto;
+    }
+
+    .header-nav-list {
+        gap: 20px;
+        /* 項目間の距離を縮める */
+    }
+
+    .header-nav-link,
+    .header-nav__button {
+        font-size: 16px;
+        /* 文字サイズを微調整 */
     }
 }
