@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
 .attendance-detail {
     width: 100%;
     min-height: 100vh;
@@ -28,7 +38,6 @@
     background: #000;
 }
 
-/* ★Figma厳守: 900px × 555px */
 .attendance-detail__card {
     width: 900px;
     height: 555px;
@@ -45,7 +54,6 @@
     border-collapse: collapse;
 }
 
-/* 555pxを全6行で均等に分割 */
 .attendance-detail__row {
     border-bottom: 1px solid #EEEEEE;
     height: 92.5px;
@@ -55,7 +63,6 @@
     border-bottom: none;
 }
 
-/* ラベル：左端から100pxの位置から開始、文字サイズ18px */
 .attendance-detail__label {
     width: 300px;
     padding-left: 100px;
@@ -70,7 +77,6 @@
     padding: 0;
 }
 
-/* データ表示（テキスト）: 18px / Bold */
 .attendance-detail__text,
 .attendance-detail__date-group span {
     font-size: 18px;
@@ -88,8 +94,6 @@
     align-items: center;
 }
 
-/* ★Figma比率: 備考(316px)に合わせた入力欄 */
-/* 2つの入力欄(130px×2) + 波線(56px) = 316px になるよう調整 */
 .attendance-detail__input {
     width: 130px;
     height: 36px;
@@ -107,7 +111,6 @@
     font-size: 18px;
 }
 
-/* ★Figma厳守: 316px × 72px */
 .attendance-detail__textarea {
     width: 316px;
     height: 72px;
@@ -123,7 +126,6 @@
     display: block;
 }
 
-/* 修正ボタン */
 .attendance-detail__actions {
     width: 900px;
     margin-top: 30px;
@@ -141,4 +143,46 @@
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
+}
+
+/* PC (1400-1540px) */
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-detail__container {
+        width: 900px;
+        /* Figma厳守のため固定 */
+    }
+}
+
+/* タブレット (768-850px) */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .attendance-detail__container {
+        width: 720px;
+    }
+
+    .attendance-detail__card {
+        width: 100%;
+        height: auto;
+        /* 内容に応じて可変にしないと入力欄がはみ出すため */
+    }
+
+    .attendance-detail__row {
+        height: 100px;
+        /* タブレット用に少し高さを確保 */
+    }
+
+    .attendance-detail__label {
+        width: 200px;
+        padding-left: 40px;
+        /* 余白を調整 */
+        font-size: 16px;
+    }
+
+    .attendance-detail__date-group {
+        gap: 30px;
+        /* 日付の間隔を狭める */
+    }
+
+    .attendance-detail__actions {
+        width: 100%;
+    }
 }
