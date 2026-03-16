@@ -2,65 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CorrectionRequest;
 use App\Models\Attendance;
-use App\Models\CorrectionRequest as CorrectionModel;
 use App\Models\CorrectionDetail;
+use App\Models\CorrectionRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class RequestController extends Controller
 {
-    public function store(CorrectionRequest $request, $id)
+    public function store(Request $request, $id)
     {
-        DB::transaction(function () use ($request, $id) {
-            // 1. 修正申請（親）を作成
-            $correctionRequest = CorrectionModel::create([
-                'attendance_id' => $id,
+        $attendance = Attendance::findOrFail($id);
+
+        DB::transaction(function () use ($request, $attendance) {
+            $correctionRequest = CorrectionRequest::create([
+                'attendance_id' => $attendance->id,
                 'user_id' => Auth::id(),
-                'status' => '承認待ち',
-                'remarks' => $request->remarks,
+                'status' => 0,
+                'reason' => $request->reason,
             ]);
 
-            // 2. 分割された「年」と「月日」を結合して日付データを作成
-            $dateString = $request->year . $request->date;
-            // 「2026年3月12日」のような形式をCarbonでパース
-            $formattedDate = Carbon::createFromFormat('Y年n月j日', $dateString)->format('Y-m-d');
-
-            // 3. 修正後の出退勤・日付（子）を保存
             CorrectionDetail::create([
                 'correction_request_id' => $correctionRequest->id,
-                'date' => $formattedDate,
-                'check_in' => $request->start_time,
-                'check_out' => $request->end_time,
+                'type' => 'check_in',
+                'modified_time' => $request->check_in,
             ]);
 
-            // 4. 休憩時間の保存
+            CorrectionDetail::create([
+                'correction_request_id' => $correctionRequest->id,
+                'type' => 'check_out',
+                'modified_time' => $request->check_out,
+            ]);
+
             $restStarts = $request->rest_start_times ?? [];
             $restEnds = $request->rest_end_times ?? [];
 
             foreach ($restStarts as $index => $startTime) {
                 if (!empty($startTime)) {
+                    $existingRest = $attendance->rests->get($index);
+
                     CorrectionDetail::create([
                         'correction_request_id' => $correctionRequest->id,
-                        'rest_start' => $startTime,
-                        'rest_end' => $restEnds[$index] ?? null,
+                        'type' => 'rest_start',
+                        'modified_time' => $startTime,
+                        'rest_id' => $existingRest ? $existingRest->id : null,
                     ]);
+
+                    if (!empty($restEnds[$index])) {
+                        CorrectionDetail::create([
+                            'correction_request_id' => $correctionRequest->id,
+                            'type' => 'rest_end',
+                            'modified_time' => $restEnds[$index],
+                            'rest_id' => $existingRest ? $existingRest->id : null,
+                        ]);
+                    }
                 }
             }
         });
 
-        return redirect()->route('attendance.list');
+        return redirect()->route('stamp_correction_request.list');
     }
 
-    public function userList()
+    public function userList(Request $request)
     {
-        $requests = CorrectionModel::where('user_id', Auth::id())
+        $status = $request->query('status', '0');
+
+        $requests = CorrectionRequest::where('user_id', Auth::id())
+            ->where('status', $status)
             ->with('attendance')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('attendance.requests', compact('requests'));
+        return view('attendances.request', compact('requests', 'status'));
+    }
+
+    public function adminList()
+    {
+        $requests = CorrectionRequest::with(['user', 'attendance'])
+            ->where('status', 0)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('admin.requests', compact('requests'));
+    }
+
+    public function approveDetail($attendance_correct_request_id)
+    {
+        $requestData = CorrectionRequest::with(['user', 'attendance', 'details'])
+            ->findOrFail($attendance_correct_request_id);
+
+        return view('admin.approve', compact('requestData'));
+    }
+
+    public function approve($attendance_correct_request_id)
+    {
+        DB::transaction(function () use ($attendance_correct_request_id) {
+            $correctionRequest = CorrectionRequest::with('details')->findOrFail($attendance_correct_request_id);
+
+            $correctionRequest->update(['status' => 1]);
+        });
+
+        return redirect()->route('admin.stamp_correction_request.list');
     }
 }

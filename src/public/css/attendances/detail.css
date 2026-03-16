@@ -40,23 +40,23 @@ body {
 
 .attendance-detail__card {
     width: 900px;
-    height: 555px;
     background: #FFFFFF;
     border-radius: 10px;
     box-sizing: border-box;
     display: flex;
     overflow: hidden;
+    padding-bottom: 20px;
+    /* 内容に応じて伸びるよう固定高さを解除 */
 }
 
 .attendance-detail__table {
     width: 100%;
-    height: 100%;
     border-collapse: collapse;
 }
 
 .attendance-detail__row {
     border-bottom: 1px solid #EEEEEE;
-    height: 92.5px;
+    min-height: 92.5px;
 }
 
 .attendance-detail__row:last-child {
@@ -65,7 +65,7 @@ body {
 
 .attendance-detail__label {
     width: 300px;
-    padding-left: 100px;
+    padding: 30px 0 30px 100px;
     text-align: left;
     font-size: 18px;
     font-weight: 700;
@@ -74,7 +74,7 @@ body {
 
 .attendance-detail__data {
     text-align: left;
-    padding: 0;
+    padding: 20px 0;
 }
 
 .attendance-detail__text,
@@ -91,7 +91,15 @@ body {
 
 .attendance-detail__input-group {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* エラー表示時に高さが崩れないよう上揃え */
+}
+
+/* 入力欄とエラーメッセージを縦に並べるボックス */
+.attendance-detail__input-box {
+    display: flex;
+    flex-direction: column;
+    width: 130px;
 }
 
 .attendance-detail__input {
@@ -103,12 +111,25 @@ body {
     font-size: 16px;
     font-weight: 700;
     color: #4B4B4B;
+    box-sizing: border-box;
 }
 
 .attendance-detail__tilde {
     width: 56px;
     text-align: center;
     font-size: 18px;
+    line-height: 36px;
+    /* inputの高さと合わせる */
+}
+
+/* エラーメッセージのスタイル */
+.error-message {
+    color: #ff0000;
+    font-size: 15px;
+    /* 大きく設定 */
+    font-weight: 700;
+    margin: 5px 0 0 0;
+    line-height: 1.2;
 }
 
 .attendance-detail__textarea {
@@ -145,15 +166,22 @@ body {
     cursor: pointer;
 }
 
-/* PC (1400-1540px) */
+.attendance-detail__pending-msg {
+    color: #ff0000;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    text-align: right;
+    width: 100%;
+}
+
+/* レスポンシブ対応は維持 */
 @media screen and (min-width: 1400px) and (max-width: 1540px) {
     .attendance-detail__container {
         width: 900px;
-        /* Figma厳守のため固定 */
     }
 }
 
-/* タブレット (768-850px) */
 @media screen and (min-width: 768px) and (max-width: 850px) {
     .attendance-detail__container {
         width: 720px;
@@ -162,27 +190,11 @@ body {
     .attendance-detail__card {
         width: 100%;
         height: auto;
-        /* 内容に応じて可変にしないと入力欄がはみ出すため */
-    }
-
-    .attendance-detail__row {
-        height: 100px;
-        /* タブレット用に少し高さを確保 */
     }
 
     .attendance-detail__label {
         width: 200px;
         padding-left: 40px;
-        /* 余白を調整 */
         font-size: 16px;
-    }
-
-    .attendance-detail__date-group {
-        gap: 30px;
-        /* 日付の間隔を狭める */
-    }
-
-    .attendance-detail__actions {
-        width: 100%;
     }
 }

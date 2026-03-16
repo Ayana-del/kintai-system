@@ -14,9 +14,9 @@ class CorrectionRequest extends FormRequest
     public function rules()
     {
         return [
-            'remarks' => ['required', 'string', 'max:255'],
-            'start_time' => ['required'],
-            'end_time' => ['required'],
+            'reason' => ['required', 'string', 'max:255'],
+            'check_in' => ['required'],
+            'check_out' => ['required'],
             'rest_start_times.*' => ['required'],
             'rest_end_times.*' => ['required'],
         ];
@@ -25,18 +25,22 @@ class CorrectionRequest extends FormRequest
     public function messages()
     {
         return [
-            'remarks.required' => '備考を記入してください',
+            'reason.required' => '備考を記入してください',
+            'check_in.required' => '出勤時間を入力してください',
+            'check_out.required' => '退勤時間を入力してください',
+            'rest_start_times.*.required' => '休憩開始時間を入力してください',
+            'rest_end_times.*.required' => '休憩終了時間を入力してください',
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $start = $this->start_time;
-            $end = $this->end_time;
+            $start = $this->check_in;
+            $end = $this->check_out;
 
             if ($start && $end && $start >= $end) {
-                $validator->errors()->add('attendance_time', '出勤時間もしくは退勤時間が不適切な値です');
+                $validator->errors()->add('check_in', '出勤時間もしくは退勤時間が不適切な値です');
             }
 
             $restStarts = $this->rest_start_times ?? [];

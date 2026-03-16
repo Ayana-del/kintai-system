@@ -27,8 +27,21 @@ class Attendance extends Model
         return $this->hasMany(Rest::class);
     }
 
+
     public function correctionRequests()
     {
         return $this->hasMany(CorrectionRequest::class);
+    }
+
+    public function latestPendingRequest()
+    {
+        return $this->hasOne(CorrectionRequest::class)
+            ->where('status', 0)
+            ->latestOfMany();
+    }
+
+    public function isPending()
+    {
+        return $this->correctionRequests()->where('status', 0)->exists();
     }
 }

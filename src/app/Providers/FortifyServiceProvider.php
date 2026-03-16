@@ -3,54 +3,71 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Http\Requests\AdminLoginRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\LoginRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use Illuminate\Cache\RateLimiting\Limit;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    public function register() {}
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
 
-    public function boot()
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
+
+        $this->app->bind(FortifyLoginRequest::class, AdminLoginRequest::class);
 
         Fortify::registerView(function () {
             return view('auth.register');
         });
 
         Fortify::loginView(function () {
+            if (request()->is('admin/*')) {
+                return view('admin.login');
+            }
             return view('auth.login');
         });
 
-        Fortify::verifyEmailView(function () {
-            return view('auth.verify-email');
+        RateLimiter::for('login', function (Request $request) {
+            $email = (string) $request->email;
+            return Limit::perMinute(10)->by($email . $request->ip());
         });
 
-        Fortify::authenticateUsing(function (LoginRequest $request) {
-            $user = User::where('email', $request->email)->first();
+        $this->app->instance(LoginResponseContract::class, new class implements LoginResponseContract {
+            public function toResponse($request)
+            {
+                $role = auth()->user()->role;
+                $redirectPath = ($role === 1)
+                    ? '/admin/stamp_correction_request/list'
+                    : '/';
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'login_failed' => 'ログイン情報が登録されていません',
-                ]);
+                return redirect()->intended($redirectPath);
             }
-
-            return $user;
         });
 
-        $this->app->bind(
-            \Laravel\Fortify\Http\Requests\RegisterRequest::class,
-            RegisterRequest::class
-        );
-
-        $this->app->bind(
-            \Laravel\Fortify\Http\Requests\LoginRequest::class,
-            LoginRequest::class
-        );
+        $this->app->instance(LogoutResponseContract::class, new class implements LogoutResponseContract {
+            public function toResponse($request)
+            {
+                if ($request->is('admin/*')) {
+                    return redirect('/admin/login');
+                }
+                return redirect('/login');
+            }
+        });
     }
 }
