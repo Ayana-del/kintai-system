@@ -17,6 +17,10 @@ class CreateCorrectionRequestsTable extends Migration
             $table->id();
             $table->foreignId('attendance_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->date('date')->comment('修正後の日付');
+            $table->text('remarks')->nullable()->comment('修正後の備考');
+
             $table->text('reason');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();

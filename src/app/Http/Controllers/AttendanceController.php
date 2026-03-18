@@ -19,7 +19,6 @@ class AttendanceController extends Controller
             ->where('date', $today)
             ->first();
 
-        // ここもattendancesフォルダ内なら 'attendances.index' に修正してください
         return view('attendances.index', compact('attendance'));
     }
 
@@ -27,19 +26,41 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
-        $month = $request->query('month', Carbon::now()->format('Y-m'));
+        $latestAttendance = Attendance::where('user_id', $user->id)->orderBy('date', 'desc')->first();
+        $defaultMonth = $latestAttendance
+            ? Carbon::parse($latestAttendance->date)->format('Y-m')
+            : Carbon::now()->format('Y-m');
+
+        $month = $request->query('month', $defaultMonth);
         $currentMonth = Carbon::parse($month);
 
-        $attendances = Attendance::where('user_id', $user->id)
+        $attendancesInMonth = Attendance::where('user_id', $user->id)
             ->where('date', 'like', $month . '%')
             ->with('rests')
-            ->orderBy('date', 'desc')
-            ->get();
+            ->get()
+            ->keyBy('date');
+
+        $daysInMonth = $currentMonth->daysInMonth;
+        $attendances = [];
+
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $date = $currentMonth->copy()->day($i)->format('Y-m-d');
+
+            if (isset($attendancesInMonth[$date])) {
+                $attendances[] = $attendancesInMonth[$date];
+            } else {
+                $attendances[] = new Attendance([
+                    'user_id' => $user->id,
+                    'date' => $date,
+                    'check_in' => null,
+                    'check_out' => null,
+                ]);
+            }
+        }
 
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
 
-        // attendancesフォルダの中のlist.blade.phpを指定
         return view('attendances.list', compact('attendances', 'month', 'prevMonth', 'nextMonth'));
     }
 
@@ -110,15 +131,26 @@ class AttendanceController extends Controller
         return redirect()->back();
     }
 
-    public function show($id)
+    public function show($id = null, Request $request)
     {
-        $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
+        $user = Auth::user();
+        $date = $request->query('date', Carbon::today()->format('Y-m-d'));
 
-        if ($attendance->user_id !== Auth::id()) {
-            abort(403);
+        if ($id && $id != 0) {
+            $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
+        } else {
+            $attendance = Attendance::where('user_id', $user->id)
+                ->whereDate('date', $date)
+                ->first();
+
+            if (!$attendance) {
+                $attendance = new Attendance([
+                    'user_id' => $user->id,
+                    'date' => $date,
+                ]);
+            }
         }
 
-        // attendancesフォルダの中のdetail.blade.phpを指定
         return view('attendances.detail', compact('attendance'));
     }
 }

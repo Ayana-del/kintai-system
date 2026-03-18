@@ -10,8 +10,9 @@ class CorrectionRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'attendance_id',
+        'user_id',
+        'date',
         'status',
         'reason',
     ];

@@ -6,25 +6,25 @@
 
 @section('content')
 <div class="attendance-list">
-    <h1 class="attendance-list__title">勤怠一覧</h1>
+    <div class="attendance-list__title">
+        勤務一覧
+    </div>
 
+    {{-- 月次ナビゲーション --}}
     <div class="attendance-list__nav">
         <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}" class="attendance-list__nav-btn">
-            <img src="{{ asset('img/yajirushi.png') }}" alt="prev" class="nav-arrow-left">
-            前月
+            ← 前月
         </a>
-
         <div class="attendance-list__current-month">
             <img src="{{ asset('img/calendar.png') }}" alt="calendar" class="attendance-list__calendar-icon">
             <span class="attendance-list__month-text">{{ \Carbon\Carbon::parse($month)->format('Y/m') }}</span>
         </div>
-
         <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}" class="attendance-list__nav-btn">
-            翌月
-            <img src="{{ asset('img/yajirushi.png') }}" alt="next" class="nav-arrow-right">
+            翌月 →
         </a>
     </div>
 
+    {{-- 勤怠テーブル --}}
     <table class="attendance-list__table">
         <thead>
             <tr>
@@ -38,39 +38,37 @@
         </thead>
         <tbody>
             @foreach($attendances as $attendance)
-            @php
-            $restMinutes = 0;
-            foreach($attendance->rests as $rest) {
-            if($rest->rest_start && $rest->rest_end) {
-            $start = \Carbon\Carbon::parse($rest->rest_start)->second(0);
-            $end = \Carbon\Carbon::parse($rest->rest_end)->second(0);
-            $restMinutes += $start->diffInMinutes($end);
-            }
-            }
-
-            $workMinutes = 0;
-            if($attendance->check_in && $attendance->check_out) {
-            $in = \Carbon\Carbon::parse($attendance->check_in)->second(0);
-            $out = \Carbon\Carbon::parse($attendance->check_out)->second(0);
-            $workMinutes = $in->diffInMinutes($out);
-            }
-
-            $actualMinutes = max(0, $workMinutes - $restMinutes);
-
-            $restH = floor($restMinutes / 60);
-            $restM = $restMinutes % 60;
-
-            $workH = floor($actualMinutes / 60);
-            $workM = $actualMinutes % 60;
-            @endphp
             <tr>
-                <td>{{ \Carbon\Carbon::parse($attendance->date)->isoFormat('MM/DD(ddd)') }}</td>
+                <td>{{ \Carbon\Carbon::parse($attendance->date)->format('m/d') }}({{ ['日','月','火','水','木','金','土'][\Carbon\Carbon::parse($attendance->date)->dayOfWeek] }})</td>
                 <td>{{ $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('H:i') : '' }}</td>
                 <td>{{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '' }}</td>
-                <td>{{ $restH }}:{{ sprintf('%02d', $restM) }}</td>
-                <td>{{ $workH }}:{{ sprintf('%02d', $workM) }}</td>
                 <td>
-                    <a href="{{ route('attendance.detail', $attendance->id) }}" class="attendance-list__detail-link">詳細</a>
+                    @php
+                    $totalRest = 0;
+                    foreach($attendance->rests as $rest) {
+                    if($rest->rest_start && $rest->rest_end) {
+                    $totalRest += \Carbon\Carbon::parse($rest->rest_end)->diffInMinutes(\Carbon\Carbon::parse($rest->rest_start));
+                    }
+                    }
+                    $hours = floor($totalRest / 60);
+                    $minutes = $totalRest % 60;
+                    @endphp
+                    {{ $totalRest > 0 ? sprintf('%d:%02d', $hours, $minutes) : '' }}
+                </td>
+                <td>
+                    @php
+                    if($attendance->check_in && $attendance->check_out) {
+                    $totalWork = \Carbon\Carbon::parse($attendance->check_out)->diffInMinutes(\Carbon\Carbon::parse($attendance->check_in)) - $totalRest;
+                    $wHours = floor($totalWork / 60);
+                    $wMinutes = $totalWork % 60;
+                    echo sprintf('%d:%02d', $wHours, $wMinutes);
+                    }
+                    @endphp
+                </td>
+                <td>
+                    <a href="{{ route('attendance.detail', ['id' => $attendance->id ?? 0, 'date' => $attendance->date]) }}" class="attendance-list__detail-link">
+                        詳細
+                    </a>
                 </td>
             </tr>
             @endforeach

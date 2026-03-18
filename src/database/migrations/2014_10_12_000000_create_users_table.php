@@ -22,6 +22,10 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('kana')->after('name')->nullable();
+        });
     }
 
     /**
@@ -34,5 +38,5 @@ class CreateUsersTable extends Migration
         Schema::dropIfExists('users');
     }
 
-    
+
 }

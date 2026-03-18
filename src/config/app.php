@@ -115,7 +115,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Laravel\Fortify\FortifyServiceProvider::class, // ← ここにFortifyを追加しました！
+        Laravel\Fortify\FortifyServiceProvider::class,
 
         /*
          * Application Service Providers...

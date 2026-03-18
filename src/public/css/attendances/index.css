@@ -92,6 +92,25 @@ body {
     cursor: pointer;
 }
 
+.attendance__message {
+    font-size: 26px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+    height: 77px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attendance__panel {
+    display: flex;
+    gap: 40px;
+    min-height: 77px;
+    align-items: center;
+    justify-content: center;
+}
+
 @media screen and (max-width: 850px) {
     .attendance__panel {
         gap: 20px;

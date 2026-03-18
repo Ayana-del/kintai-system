@@ -20,6 +20,7 @@ class RequestController extends Controller
             $correctionRequest = CorrectionRequest::create([
                 'attendance_id' => $attendance->id,
                 'user_id' => Auth::id(),
+                'date' => $attendance->date,
                 'status' => 0,
                 'reason' => $request->reason,
             ]);
@@ -72,7 +73,7 @@ class RequestController extends Controller
         $requests = CorrectionRequest::where('user_id', Auth::id())
             ->where('status', $status)
             ->with('attendance')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return view('attendances.request', compact('requests', 'status'));

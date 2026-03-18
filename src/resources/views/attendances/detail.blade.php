@@ -10,7 +10,8 @@
         <h2 class="attendance-detail__heading">勤怠詳細</h2>
 
         @php
-        $isPending = $attendance->isPending();
+        // データが存在しない（IDがない）場合は承認待ちチェックをスキップ
+        $isPending = isset($attendance->id) ? $attendance->isPending() : false;
         $pendingRequest = $isPending ? $attendance->latestPendingRequest : null;
 
         $pendingCheckIn = $isPending ? $pendingRequest->details->where('type', 'check_in')->first() : null;
@@ -18,12 +19,16 @@
 
         $pendingRestStarts = $isPending ? $pendingRequest->details->where('type', 'rest_start')->values() : collect();
         $pendingRestEnds = $isPending ? $pendingRequest->details->where('type', 'rest_end')->values() : collect();
+
+        // 表示用の日付
+        $displayDate = \Carbon\Carbon::parse($attendance->date);
         @endphp
 
-        <form action="{{ route('attendance.correction.store', ['id' => $attendance->id]) }}" method="POST">
+        {{-- IDがない場合は 0 を渡す --}}
+        <form action="{{ route('attendance.correction.store', ['id' => $attendance->id ?? 0]) }}" method="POST">
             @csrf
-            <input type="hidden" name="year" value="{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}">
-            <input type="hidden" name="date" value="{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}">
+            {{-- 新規作成用に日付を隠しパラメータで保持 --}}
+            <input type="hidden" name="date" value="{{ $attendance->date }}">
 
             <div class="attendance-detail__card">
                 <table class="attendance-detail__table">
@@ -37,8 +42,8 @@
                         <th class="attendance-detail__label">日付</th>
                         <td class="attendance-detail__data">
                             <div class="attendance-detail__date-group">
-                                <span>{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
-                                <span>{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
+                                <span>{{ $displayDate->format('Y年') }}</span>
+                                <span>{{ $displayDate->format('n月j日') }}</span>
                             </div>
                         </td>
                     </tr>
@@ -55,7 +60,8 @@
                             @else
                             <div class="attendance-detail__input-group">
                                 <div class="attendance-detail__input-box">
-                                    <input type="text" name="check_in" class="attendance-detail__input" value="{{ old('check_in', \Carbon\Carbon::parse($attendance->check_in)->format('H:i')) }}">
+                                    {{-- check_in が null の場合を考慮して parse を回避 --}}
+                                    <input type="text" name="check_in" class="attendance-detail__input" value="{{ old('check_in', $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('H:i') : '') }}">
                                     @error('check_in') <p class="error-message">{{ $message }}</p> @enderror
                                 </div>
                                 <span class="attendance-detail__tilde">〜</span>
@@ -68,77 +74,48 @@
                         </td>
                     </tr>
 
-                    <tr class="attendance-detail__row">
-                        <th class="attendance-detail__label">休憩</th>
+                    {{-- 休憩1・2も同様に $attendance->rests->get(0) があるかチェックして表示 --}}
+                    @for ($i = 0; $i < 2; $i++)
+                        <tr class="attendance-detail__row">
+                        <th class="attendance-detail__label">休憩{{ $i + 1 }}</th>
                         <td class="attendance-detail__data">
                             @if($isPending)
                             @php
-                            $pStart1 = $pendingRestStarts->get(0);
-                            $pEnd1 = $pendingRestEnds->get(0);
+                            $pStart = $pendingRestStarts->get($i);
+                            $pEnd = $pendingRestEnds->get($i);
                             @endphp
                             <div class="attendance-detail__input-group">
-                                <span class="attendance-detail__text">{{ $pStart1 ? \Carbon\Carbon::parse($pStart1->modified_time)->format('H:i') : '' }}</span>
+                                <span class="attendance-detail__text">{{ $pStart ? \Carbon\Carbon::parse($pStart->modified_time)->format('H:i') : '' }}</span>
                                 <span class="attendance-detail__tilde">〜</span>
-                                <span class="attendance-detail__text">{{ $pEnd1 ? \Carbon\Carbon::parse($pEnd1->modified_time)->format('H:i') : '' }}</span>
+                                <span class="attendance-detail__text">{{ $pEnd ? \Carbon\Carbon::parse($pEnd->modified_time)->format('H:i') : '' }}</span>
                             </div>
                             @else
-                            @php $rest1 = $attendance->rests->get(0); @endphp
+                            @php $rest = $attendance->rests->get($i); @endphp
                             <div class="attendance-detail__input-group">
                                 <div class="attendance-detail__input-box">
-                                    <input type="text" name="rest_start_times[]" class="attendance-detail__input" value="{{ old('rest_start_times.0', $rest1 ? \Carbon\Carbon::parse($rest1->rest_start)->format('H:i') : '') }}">
-                                    @error('rest_start_times.0') <p class="error-message">{{ $message }}</p> @enderror
+                                    <input type="text" name="rest_start_times[]" class="attendance-detail__input" value="{{ old('rest_start_times.'.$i, $rest ? \Carbon\Carbon::parse($rest->rest_start)->format('H:i') : '') }}">
                                 </div>
                                 <span class="attendance-detail__tilde">〜</span>
                                 <div class="attendance-detail__input-box">
-                                    <input type="text" name="rest_end_times[]" class="attendance-detail__input" value="{{ old('rest_end_times.0', $rest1 && $rest1->rest_end ? \Carbon\Carbon::parse($rest1->rest_end)->format('H:i') : '') }}">
-                                    @error('rest_end_times.0') <p class="error-message">{{ $message }}</p> @enderror
+                                    <input type="text" name="rest_end_times[]" class="attendance-detail__input" value="{{ old('rest_end_times.'.$i, ($rest && $rest->rest_end) ? \Carbon\Carbon::parse($rest->rest_end)->format('H:i') : '') }}">
                                 </div>
                             </div>
                             @endif
                         </td>
-                    </tr>
+                        </tr>
+                        @endfor
 
-                    <tr class="attendance-detail__row">
-                        <th class="attendance-detail__label">休憩2</th>
-                        <td class="attendance-detail__data">
-                            @if($isPending)
-                            @php
-                            $pStart2 = $pendingRestStarts->get(1);
-                            $pEnd2 = $pendingRestEnds->get(1);
-                            @endphp
-                            <div class="attendance-detail__input-group">
-                                <span class="attendance-detail__text">{{ $pStart2 ? \Carbon\Carbon::parse($pStart2->modified_time)->format('H:i') : '' }}</span>
-                                <span class="attendance-detail__tilde">〜</span>
-                                <span class="attendance-detail__text">{{ $pEnd2 ? \Carbon\Carbon::parse($pEnd2->modified_time)->format('H:i') : '' }}</span>
-                            </div>
-                            @else
-                            @php $rest2 = $attendance->rests->get(1); @endphp
-                            <div class="attendance-detail__input-group">
-                                <div class="attendance-detail__input-box">
-                                    <input type="text" name="rest_start_times[]" class="attendance-detail__input" value="{{ old('rest_start_times.1', $rest2 ? \Carbon\Carbon::parse($rest2->rest_start)->format('H:i') : '') }}">
-                                    @error('rest_start_times.1') <p class="error-message">{{ $message }}</p> @enderror
-                                </div>
-                                <span class="attendance-detail__tilde">〜</span>
-                                <div class="attendance-detail__input-box">
-                                    <input type="text" name="rest_end_times[]" class="attendance-detail__input" value="{{ old('rest_end_times.1', $rest2 && $rest2->rest_end ? \Carbon\Carbon::parse($rest2->rest_end)->format('H:i') : '') }}">
-                                    @error('rest_end_times.1') <p class="error-message">{{ $message }}</p> @enderror
-                                </div>
-                            </div>
-                            @endif
-                        </td>
-                    </tr>
-
-                    <tr class="attendance-detail__row">
-                        <th class="attendance-detail__label">備考</th>
-                        <td class="attendance-detail__data">
-                            @if($isPending)
-                            <span class="attendance-detail__text">{{ $pendingRequest->reason }}</span>
-                            @else
-                            <textarea name="reason" class="attendance-detail__textarea">{{ old('reason', $attendance->remarks) }}</textarea>
-                            @error('reason') <p class="error-message">{{ $message }}</p> @enderror
-                            @endif
-                        </td>
-                    </tr>
+                        <tr class="attendance-detail__row">
+                            <th class="attendance-detail__label">備考</th>
+                            <td class="attendance-detail__data">
+                                @if($isPending)
+                                <span class="attendance-detail__text">{{ $pendingRequest->reason }}</span>
+                                @else
+                                <textarea name="reason" class="attendance-detail__textarea">{{ old('reason', $attendance->remarks) }}</textarea>
+                                @error('reason') <p class="error-message">{{ $message }}</p> @enderror
+                                @endif
+                            </td>
+                        </tr>
                 </table>
             </div>
 

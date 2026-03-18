@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') | COACHTECH</title>
+    <title>COACHTECH 新勤怠アプリ</title>
     <link rel="stylesheet" href="{{ asset('css/layouts/admin.css') }}">
     @yield('css')
 </head>
@@ -29,7 +29,7 @@
                         <a href="{{ route('admin.request.list') }}">申請一覧</a>
                     </li>
                     <li class="header__nav-item">
-                        <form action="{{ route('logout') }}" method="post" class="header__form">
+                        <form action="{{ route('admin.logout') }}" method="post" class="header__form">
                             @csrf
                             <button type="submit" class="header__logout-button">ログアウト</button>
                         </form>
