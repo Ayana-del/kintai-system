@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\CorrectionDetail;
 use App\Models\CorrectionRequest;
+use App\Http\Requests\CorrectionRequest as CorrectionValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,7 @@ use Carbon\Carbon;
 
 class RequestController extends Controller
 {
-    public function store(Request $request, $id)
+    public function store(CorrectionValidation $request, $id)
     {
         $attendance = Attendance::findOrFail($id);
 
@@ -76,17 +77,19 @@ class RequestController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return view('attendances.request', compact('requests', 'status'));
+        return view('attendances.request.list', compact('requests', 'status'));
     }
 
-    public function adminList()
+    public function adminList(Request $request)
     {
+        $status = $request->query('status', '0');
+
         $requests = CorrectionRequest::with(['user', 'attendance'])
-            ->where('status', 0)
+            ->where('status', $status)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return view('admin.requests', compact('requests'));
+        return view('admin.requests.list', compact('requests', 'status'));
     }
 
     public function approveDetail($attendance_correct_request_id)
@@ -103,8 +106,18 @@ class RequestController extends Controller
             $correctionRequest = CorrectionRequest::with('details')->findOrFail($attendance_correct_request_id);
 
             $correctionRequest->update(['status' => 1]);
+
+            $attendance = $correctionRequest->attendance;
+
+            foreach ($correctionRequest->details as $detail) {
+                if ($detail->type === 'check_in') {
+                    $attendance->update(['check_in' => $detail->modified_time]);
+                } elseif ($detail->type === 'check_out') {
+                    $attendance->update(['check_out' => $detail->modified_time]);
+                }
+            }
         });
 
-        return redirect()->route('admin.stamp_correction_request.list');
+        return redirect()->route('admin.request.list');
     }
 }

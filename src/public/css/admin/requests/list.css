@@ -1,0 +1,147 @@
+body {
+    background-color: #F5F5F5;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.requests {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 158px;
+}
+
+.requests__header {
+    width: 90%;
+    max-width: 900px;
+    margin-bottom: 65px;
+    display: flex;
+    align-items: center;
+}
+
+.requests__title {
+    position: relative;
+    padding-left: 21px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+    line-height: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.requests__title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 40px;
+    border-left: 8px solid #000000;
+}
+
+.requests__tabs {
+    width: 90%;
+    max-width: 900px;
+    display: flex;
+    gap: 106px;
+    border-bottom: 1px solid #000000;
+    margin-bottom: 45px;
+    padding-left: 57px;
+    box-sizing: border-box;
+}
+
+.requests__tab {
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0.15em;
+    color: #000000;
+    padding-bottom: 17px;
+    font-weight: 400;
+}
+
+.requests__tab.is-active {
+    font-weight: 700;
+}
+
+.requests__inner {
+    width: 90%;
+    max-width: 900px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    border: 1px solid #E1E1E1;
+    overflow-x: auto;
+}
+
+.requests__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.requests__row--header {
+    height: 46px;
+    border-bottom: 3px solid #E1E1E1;
+}
+
+.requests__row {
+    height: 50px;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.requests__row:last-child {
+    border-bottom: none;
+}
+
+.requests__label,
+.requests__data {
+    font-size: 16px;
+    font-weight: 700;
+    color: #737373;
+    letter-spacing: 0.15em;
+    padding: 0 20px;
+    text-align: left;
+}
+
+.requests__link {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+}
+
+@media screen and (max-width: 1540px) {
+    .requests {
+        padding-top: 100px;
+    }
+}
+
+@media screen and (max-width: 850px) {
+
+    .requests__header,
+    .requests__tabs,
+    .requests__inner {
+        width: 95%;
+    }
+
+    .requests__tabs {
+        gap: 50px;
+        padding-left: 20px;
+    }
+
+    .requests__title {
+        font-size: 24px;
+    }
+
+    .requests__label,
+    .requests__data {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+}

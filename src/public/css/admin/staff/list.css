@@ -4,37 +4,35 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-.staff-attendance {
+.staff-list {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 171px;
-    /* top: 171px */
+    padding-top: 60px;
+    padding-bottom: 60px;
 }
 
-.staff-attendance__header {
+.staff-list__header {
     width: 900px;
-    margin-bottom: 47px;
-    /* 254px - 171px - 36px */
+    margin-bottom: 94px;
+    position: relative;
 }
 
-.staff-attendance__title {
+.staff-list__title {
     position: relative;
     padding-left: 21px;
-    /* 327px - 306px */
     font-size: 30px;
     font-weight: 700;
+    line-height: 100%;
     color: #000000;
     margin: 0;
-    line-height: 100%;
 }
 
-.staff-attendance__title::before {
+.staff-list__title::before {
     content: "";
     position: absolute;
-    left: -21px;
-    /* left: 306px */
+    left: 0;
     top: 50%;
     transform: translateY(-50%);
     width: 0;
@@ -42,88 +40,39 @@ body {
     border-left: 8px solid #000000;
 }
 
-/* ナビゲーションカード (height: 60px) */
-.staff-attendance__nav {
+.staff-list__inner {
     width: 900px;
-    height: 60px;
+    min-height: 317px;
     background-color: #FFFFFF;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 25px;
-    box-sizing: border-box;
-    margin-bottom: 46px;
-    /* 360px - 254px - 60px */
+    border: 1px solid #E1E1E1;
 }
 
-.staff-attendance__month-link {
-    text-decoration: none;
-    color: #737373;
-    /* 前月・翌月の色 */
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    display: flex;
-    align-items: center;
-}
-
-.staff-attendance__nav-icon--prev {
-    width: 20px;
-    height: 15px;
-    margin-right: 7px;
-}
-
-.staff-attendance__nav-icon--next {
-    width: 20px;
-    height: 15px;
-    margin-left: 7px;
-}
-
-.staff-attendance__current-month {
-    display: flex;
-    align-items: center;
-}
-
-.staff-attendance__calendar-icon {
-    width: 25px;
-    height: 25px;
-    margin-right: 11px;
-}
-
-.staff-attendance__month-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: #000000;
-}
-
-/* メインカード (top: 360px) */
-.staff-attendance__inner {
-    width: 900px;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.staff-attendance__table {
+.staff-list__table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
-/* ヘッダー (top: 375px) */
-.staff-attendance__row--header {
-    height: 46px;
-    /* 375px付近のバランス */
+.staff-list__row--header {
+    height: 45px;
     border-bottom: 3px solid #E1E1E1;
-    /* 指定の3px線 */
 }
 
-.staff-attendance__row {
+.staff-list__row {
     height: 50px;
     border-bottom: 1px solid #E1E1E1;
 }
 
-.staff-attendance__label {
+.staff-list__row:last-child {
+    border-bottom: none;
+}
+
+.staff-list__label--name,
+.staff-list__label--email,
+.staff-list__label--link,
+.staff-list__data--name,
+.staff-list__data--email {
     font-size: 16px;
     font-weight: 700;
     color: #737373;
@@ -132,40 +81,63 @@ body {
     vertical-align: middle;
 }
 
-.staff-attendance__data {
-    font-size: 16px;
-    font-weight: 700;
-    color: #737373;
-    /* 1枚目画像ではデータもグレー系 */
-    letter-spacing: 0.15em;
+.staff-list__label--name,
+.staff-list__data--name {
+    width: 302px;
+}
+
+.staff-list__label--email,
+.staff-list__data--email {
+    width: 400px;
+}
+
+.staff-list__label--link,
+.staff-list__data--link {
+    width: 198px;
+}
+
+.staff-list__data--link {
     text-align: center;
     vertical-align: middle;
 }
 
-.staff-attendance__link {
-    color: #4BABB3;
-    /* 1枚目画像に基づいた詳細リンク色 */
-    text-decoration: none;
+.staff-list__link {
+    font-size: 16px;
     font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.15em;
+    text-decoration: none;
 }
 
-/* CSV出力ボタン配置 */
-.staff-attendance__export {
-    width: 900px;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .staff-list {
+        padding-top: 80px;
+    }
 }
 
-.staff-attendance__csv-btn {
-    width: 120px;
-    height: 40px;
-    background-color: #000000;
-    color: #FFFFFF;
-    text-align: center;
-    line-height: 40px;
-    text-decoration: none;
-    font-weight: 700;
-    border-radius: 4px;
-    font-size: 14px;
+@media screen and (min-width: 768px) and (max-width: 850px) {
+
+    .staff-list__header,
+    .staff-list__inner {
+        width: 700px;
+    }
+
+    .staff-list__label--name,
+    .staff-list__data--name {
+        width: 200px;
+    }
+
+    .staff-list__label--email,
+    .staff-list__data--email {
+        width: 350px;
+    }
+
+    .staff-list__label--link,
+    .staff-list__data--link {
+        width: 150px;
+    }
+
+    .staff-list__title {
+        font-size: 26px;
+    }
 }
